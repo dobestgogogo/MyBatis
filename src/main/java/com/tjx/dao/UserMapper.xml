@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tjx.dao.UserMapper">
+    <!--if判断 根据用户传递对象中的属性值-->
+    <select id="selectInfoByIf" resultMap="stuMap">
+        SELECT sid,sname,age FROM student where 1=1
+        <if test="name != null and name != ''">
+            and sname LIKE concat('%',#{name},'%')
+        </if>
+        <if test="age>0">
+            and age = #{age}
+        </if>
+    </select>
+    <!--where判断-->
+    <select id="selectInfoByWhere" resultMap="stuMap">
+        SELECT sid,sname,age FROM student
+        <where>
+            <if test="name != null and name != ''">
+                and sname LIKE concat('%',#{name},'%')
+            </if>
+            <if test="age>0">
+                and age = #{age}
+            </if>
+        </where>
+    </select>
+    <!--choose-->
+    <select id="selectInfoByChoose" resultMap="stuMap">
+        SELECT sid,sname,age FROM student
+        <where>
+            <choose>
+                <when test="name != null and name != ''">
+                    and sname LIKE concat('%',#{name},'%')
+                </when>
+                <when test="age>0">
+                    and age = #{age}
+                </when>
+                <otherwise>
+                    sid=5
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+    <!--array-->
+    <select id="selectInfoByArray" resultMap="stuMap">
+        SELECT sid,sname,age FROM student
+          <if test="array.length>0">
+              <where>
+                  sid IN
+                  <foreach collection="array" open="(" close=")" separator="," item="tid">
+                      #{tid}
+                  </foreach>
+              </where>
+          </if>
+    </select>
+    <!--list<包装类>-->
+    <select id="selectInfoByList" resultMap="stuMap">
+        SELECT sid,sname,age FROM student
+        <if test="list.size>0">
+            <where>
+                sid IN
+                <foreach collection="list" open="(" close=")" separator="," item="tid">
+                    #{tid}
+                </foreach>
+            </where>
+        </if>
+    </select>
+    <!--list <对象>-->
+    <select id="selectInfoByListStu" resultMap="stuMap">
+        SELECT sid,sname,age FROM student
+        <if test="list.size>0">
+            <where>
+                sid IN
+                <foreach collection="list" open="(" close=")" separator="," item="stu">
+                    #{stu.id}
+                </foreach>
+            </where>
+        </if>
+    </select>
+    <!--#key 获取的是贱 map.keys获取的是键的集合-->
+    <select id="selectInfoByMap" resultMap="stuMap">
+        select sid,sname,age FROM student
+        <if test="map.keys.size>0">
+            <where>
+                sid IN
+                <foreach collection="map.keys" open="(" close=")" separator="," item="key">
+                    #{map[${key}]}
+                </foreach>
+            </where>
+        </if>
+    </select>
+
+    <resultMap id="stuMap" type="Student">
+        <id property="id" column="sid"/>
+        <result property="name" column="sname"/>
+        <result property="age" column="age"/>
+    </resultMap>
+</mapper>

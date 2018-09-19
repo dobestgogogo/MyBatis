@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration><!--核心配置--><!-- 节点有顺序 位置不正确会报错 -->
+    <properties resource="jdbc.properties"/> <!--引入jdbc.properties文件-->
+    <settings>
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <setting name="aggressiveLazyLoading" value="false"/>
+        <setting name="cacheEnabled" value="true"/><!--全局开关2级缓存 true/false-->
+    </settings>
+    <typeAliases><!--别名-->
+        <package name="com.tjx.entity"/><!--此包下所有实体类的别名 con,tjx.entity.User 简写User-->
+    </typeAliases>
+    <environments default="mysql"><!--默认运行子节点id=？-->
+        <environment id="mysql"><!--id唯一标识-->
+            <!--设置事务管理 采用JDBC的事务管理
+            数据源：创建连接，并把连接交给连接池
+            连接池：负责管理回收连接
+            -->
+            <transactionManager type="JDBC"></transactionManager>
+            <!--POOLED：mybatis自带数据源  JNDI：基于tomcat数据源-->
+            <dataSource type="POOLED">
+                <property name="driver" value="${jdbc.driver}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!--引入Mapper文件-->
+    <mappers>
+        <mapper resource="com/tjx/dao/StudentMapper.xml"/>
+        <mapper resource="com/tjx/dao/TeacherMapper.xml"/>
+    </mappers>
+
+</configuration>
